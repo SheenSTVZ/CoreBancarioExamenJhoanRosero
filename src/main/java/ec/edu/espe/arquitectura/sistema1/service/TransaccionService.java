@@ -2,8 +2,10 @@ package ec.edu.espe.arquitectura.sistema1.service;
 
 import ec.edu.espe.arquitectura.sistema1.dao.TransaccionRepository;
 import ec.edu.espe.arquitectura.sistema1.dto.TransaccionDTO;
+import ec.edu.espe.arquitectura.sistema1.enums.EstadoTransaccion;
 import ec.edu.espe.arquitectura.sistema1.model.Cliente;
 import ec.edu.espe.arquitectura.sistema1.model.Cuenta;
+import ec.edu.espe.arquitectura.sistema1.model.Narcotraficantes;
 import ec.edu.espe.arquitectura.sistema1.model.Transaccion;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestFactory;
@@ -17,7 +19,7 @@ import java.util.UUID;
 @Service
 public class TransaccionService {
 
-    private  static final String BASE_URL="http://localhost:8081/narcotraficantes/{nombreCompleto}";
+    private  static final String BASE_URL="http://localhost:8081/narcotraficantes";
 
     private final RestTemplate restTemplate;
     private final ClienteService clienteService;
@@ -46,9 +48,14 @@ public class TransaccionService {
             throw new NullPointerException("cliente nulo");
         }
 
+        ResponseEntity<Narcotraficantes> response = this.restTemplate.getForEntity(BASE_URL+"/"+clienteDestino,Narcotraficantes.class);
+        Narcotraficantes nar = response.getBody();
 
-
-
+        if(nar.getSancionado()!= "NO"){
+            transaccion.setEstado(EstadoTransaccion.BLOQUEADA.getText());
+        }else{
+            transaccion.setEstado(EstadoTransaccion.EJECUTADA.getText());
+        }
 
 
     }
