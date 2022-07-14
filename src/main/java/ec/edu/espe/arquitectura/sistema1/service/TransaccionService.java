@@ -57,6 +57,7 @@ public class TransaccionService {
             transaccion.setEstado(EstadoTransaccion.EJECUTADA.getText());
         }
 
+        this.transaccionRepository.save(transaccion);
 
     }
     private ClientHttpRequestFactory getClientHttpRequestFactory() {
